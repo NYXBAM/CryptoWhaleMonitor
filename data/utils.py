@@ -11,6 +11,18 @@ def get_explorer_url(blockchain):
     elif blockchain == 'ETH':
         return "https://etherscan.io/tx/"
     
+def get_classification_label(classification):
+    classification = classification or "Unknown / normal transfer"
+    if classification.startswith("withdrawal"):
+        exchange = classification.split("withdrawal from: ")[-1]
+        return f"➡️ 🏦 Withdrawal from {exchange}"
+    elif classification.startswith("deposit"):
+        exchange = classification.split("deposit to: ")[-1]
+        return f"⬅️ 🏦 Deposit to {exchange}"
+    else:
+        return "🔄 Unknown / normal transfer"
+
+    
 def save_whale_txs(blockchain: str, whales: list):
     """
     Save whale transactions to the database and send Telegram alerts.
@@ -31,6 +43,7 @@ def save_whale_txs(blockchain: str, whales: list):
                 f"💰 Amount: <b>{amount:.2f} {blockchain}</b>\n"
                 f"🟢 From: <b>{tx.get('from','Unknown')[:6]}…{tx.get('from','Unknown')[-4:]}</b>\n"
                 f"🔴 To: <b>{tx.get('to','Unknown')[:6]}…{tx.get('to','Unknown')[-4:]}</b>\n"
+                f"🏦 Classification: {get_classification_label(tx.get('classification','Unknown'))}\n"
                 f"🔗 Tx: <a href='{get_explorer_url(blockchain)}{txid}'>{txid[:12]}…</a>\n"
                 f"🌐 Explorer: <a href='{get_explorer_url(blockchain)}{txid}'>View Transaction</a>"
             )
@@ -42,7 +55,8 @@ def save_whale_txs(blockchain: str, whales: list):
                 from_address=tx.get('from', 'Unknown'),
                 to_address=tx.get('to', 'Unknown'),
                 amount=amount,
-                block_hash_or_number=tx.get('block_hash', tx.get('block_number', 'Unknown'))
+                block_hash_or_number=tx.get('block_hash', tx.get('block_number', 'Unknown')),
+                classification=tx.get('classification', None)
             )
             db.add(whale)
         db.commit()

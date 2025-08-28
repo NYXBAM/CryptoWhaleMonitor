@@ -12,4 +12,5 @@ class WhaleTransaction(Base):
     to_address = Column(String)
     amount = Column(Float, nullable=False)
     block_hash_or_number = Column(String, nullable=False)
+    classification = Column(String, nullable=True)
     timestamp = Column(DateTime(timezone=True), server_default=func.now())

@@ -8,6 +8,12 @@ DATABASE_URL = 'sqlite:///./whale.db'
 
 ETH_WHALE_THRESHOLD = 500     # ETH
 # POLYGON_WHALE_THRESHOLD = 10000 # MATIC
-BTC_WHALE_THRESHOLD = 5     # BTC
+BTC_WHALE_THRESHOLD = 3   # BTC
 
 
+
+KNOWN_EXCHANGES = [
+    "Binance", "Coinbase", "Kraken", "Bitfinex", "Bitstamp",
+    "Huobi", "OKX", "Gemini", "Bitget", "FTX", "KuCoin", "Poloniex",
+    "Wintermute", "Bybit", 'Crypto.com', "Bittrex", "Gate.io", "Upbit", "Whitebit", "BingX","Coinbase", "BitMart", "Luno", "WazirX", "ZB.com", "BitFlyer"
+]

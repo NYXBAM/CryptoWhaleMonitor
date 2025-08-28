@@ -1,6 +1,6 @@
 from .monitor import BitcoinMonitor
-from config import BTC_WHALE_THRESHOLD
-
+from config import BTC_WHALE_THRESHOLD, KNOWN_EXCHANGES
+import requests
 
 
 class BitcoinParser(BitcoinMonitor):
@@ -8,6 +8,26 @@ class BitcoinParser(BitcoinMonitor):
     def __init__(self):
         super().__init__()
         self.whale_threshold = BTC_WHALE_THRESHOLD
+
+    def check_address(self, address: str) -> str:
+        """Check BTC address label via WalletExplorer API."""
+        url = f"https://www.walletexplorer.com/api/1/address-lookup?address={address}"
+        try:
+            resp = requests.get(url, timeout=10)
+            if resp.status_code != 200:
+                print(f"❌ Error {resp.status_code} for address {address}")
+                return None
+
+            data = resp.json()
+            print(data)
+            wallet_info = data.get("wallet")
+            if wallet_info and wallet_info.get("label"):
+                
+                return wallet_info["label"]
+            return None
+        except Exception as e:
+            print(f"❌ Exception checking address {address}: {e}")
+            return None
 
     def parse_block(self, block_hash):
         txs = self.get_btc_block_txs(block_hash)
@@ -29,12 +49,31 @@ class BitcoinParser(BitcoinMonitor):
                 if tx.get('vout') and len(tx['vout']) > 0:
                     to_addr = tx['vout'][0].get('scriptpubkey_address', 'Unknown')
 
+                from_lbl = self.check_address(from_addr)
+                to_lbl = self.check_address(to_addr)
+                print(from_lbl, to_lbl)
+
+                classification = "normal"  # default
+
+                if from_lbl:
+                    for exch in KNOWN_EXCHANGES:
+                        if exch in from_lbl:
+                            classification = f"withdrawal from: {from_lbl}"
+                            break
+
+                if to_lbl and classification == "normal": 
+                    for exch in KNOWN_EXCHANGES:
+                        if exch in to_lbl:
+                            classification = f"deposit to: {to_lbl}"
+                            break
+
                 whales.append({
                     "txid": tx['txid'],
                     "block_hash": block_hash,
                     "amount": total_btc,
                     "from": from_addr,
-                    "to": to_addr
+                    "to": to_addr,
+                    "classification": classification
                 })
 
         return whales
