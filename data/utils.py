@@ -15,12 +15,15 @@ def get_classification_label(classification):
     classification = classification or "Unknown / normal transfer"
     if classification.startswith("withdrawal"):
         exchange = classification.split("withdrawal from: ")[-1]
-        return f"➡️ 🏦 Withdrawal from {exchange}"
+        return f"➡️ 🏦 Withdrawal from: {exchange}"
     elif classification.startswith("deposit"):
         exchange = classification.split("deposit to: ")[-1]
-        return f"⬅️ 🏦 Deposit to {exchange}"
+        return f"⬅️ 🏦 Deposit to: {exchange}"
+    
+    elif classification.startswith("exchange"):
+        return "🔄 🏦 Exchange-to-exchange transfer"
     else:
-        return "🔄 Unknown / normal transfer"
+        return "🔄 Unknown|normal transfer"
 
     
 def save_whale_txs(blockchain: str, whales: list):
