@@ -6,6 +6,7 @@ BTC_API_URL = "https://mempool.space/api"
 DATABASE_URL = 'sqlite:///./whale.db'
 
 ETH_WHALE_THRESHOLD = 500     # ETH
+BTC_WHALE_THRESHOLD = 50
 
 
 
