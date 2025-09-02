@@ -2,11 +2,12 @@
 from utils.send_telegram_channel import send_telegram_message
 from .db import SessionLocal
 from .models import WhaleTransaction
+import json
+import os
 
 
 def get_explorer_url(blockchain):
     if blockchain == 'BTC':
-        # return "https://btcscan.org/tx/"
         return "https://blockchain.com/explorer/transactions/btc/"
     elif blockchain == 'ETH':
         return "https://etherscan.io/tx/"
@@ -35,7 +36,7 @@ def save_whale_txs(blockchain: str, whales: list):
     db = SessionLocal()
     try:
         for tx in whales:
-            txid = tx.get('txid') or tx.get('hash') 
+            txid = tx.get('txid') or tx.get('hash')  or tx.get('id')
             amount = tx.get('amount') or tx.get('value')
             
             exists = db.query(WhaleTransaction).filter_by(txid=txid).first()
@@ -68,3 +69,16 @@ def save_whale_txs(blockchain: str, whales: list):
         print(f"Error saving whales: {e}")
     finally:
         db.close()
+
+def load_seen_hashes(filename='alerts_hashes.json'):
+    if os.path.exists(filename):
+        try:
+            with open(filename, 'r') as f:
+                return set(json.load(f))
+        except (json.JSONDecodeError, FileNotFoundError):
+            return set()
+    return set()
+
+def save_seen_hashes(hashes, filename='alerts_hashes.json'):
+    with open(filename, 'w') as f:
+        json.dump(list(hashes), f)

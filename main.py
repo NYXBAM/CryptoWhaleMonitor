@@ -4,40 +4,75 @@ from core.eth.monitor import *
 from core.btc.parser import *
 from core.eth.parser import *
 
+from utils.send_telegram_channel import send_telegram_message
+
 
 from config import BTC_WHALE_THRESHOLD, ETH_WHALE_THRESHOLD
 import time
 
 from data.db import engine, Base
 from data.models import WhaleTransaction
-from data.utils import save_whale_txs
+from data.utils import *
+
+
+import hashlib
+import json
+
+
+
 
 
 Base.metadata.create_all(bind=engine)
 
 def main():
-    btc_parser = BitcoinParser()
+    btc_whale = BitcoinWhaleParser()
     eth_parser = EthParser(whale_threshold=ETH_WHALE_THRESHOLD)
 
-
-    last_btc_block = None
+    # btc_parser = BitcoinMonitor()
+    # last_btc_block = None
     last_eth_block = None
 
+    seen_hashes = load_seen_hashes()
+    alerts = []
 
     while True:
-        # ---------- BTC ----------
         try:
-            latest_btc_block = btc_parser.get_btc_latest_block_hash()
-            if latest_btc_block != last_btc_block:
-                whales = btc_parser.parse_block(latest_btc_block)
-                for tx in whales:
-                    print(f"🚨 BTC whale: {tx['amount']:.2f} BTC, Tx {tx['txid']} , from {tx['from']} → {tx['to']}")
-                    save_whale_txs("BTC", whales)
-                last_btc_block = latest_btc_block
+            # latest_btc_block = btc_parser.get_btc_latest_block_hash()
+            # if latest_btc_block != last_btc_block:
+            new_alerts = btc_whale.fetch_whale_alerts()
+            fresh_alerts = []
+            for a in new_alerts:
+                alert_str = json.dumps(a, sort_keys=True)  
+                alert_hash = hashlib.sha256(alert_str.encode()).hexdigest()
+                if alert_hash not in seen_hashes:
+                    seen_hashes.add(alert_hash)
+                    fresh_alerts.append(a)
+                
+                if fresh_alerts:
+                    save_seen_hashes(seen_hashes)
+            if fresh_alerts:
+                for a in fresh_alerts:
+                    print(f"${a['blockchain']} whale: {a['amount']} {a['classification']}")
+                
+                alerts.extend(fresh_alerts)
+
+                for a in fresh_alerts:
+                    blockchain = a['blockchain']
+                    amount = a['amount']
+                    classification = a['classification']
+                    link = a['link']
+                    message = (
+                        f"🐳 <b>${blockchain} Whale-Alert.io!</b>\n\n"
+                        f"💰 Amount: <b>{amount:.2f} {blockchain}</b>\n"
+                        f"🏦 Classification: {classification}\n"
+                        f"🔗 Link: <a href='{link}'>View Alert</a>"
+                    )
+                    send_telegram_message(message)
+
         except Exception as e:
             print("BTC error:", e)
 
-        # ---------- ETH ----------
+       # ---------- ETH ----------
         try:
             latest_eth_block = eth_parser.get_latest_block_number()
             if latest_eth_block != last_eth_block:
@@ -50,7 +85,7 @@ def main():
             print("ETH error:", e)
 
         
-        time.sleep(5)  
+        time.sleep(60)  
         
 
 if __name__ == "__main__":
