@@ -25,7 +25,7 @@ class BitcoinWhaleParser:
                 alerts.append({
                     "blockchain": amt.get("symbol"),
                     "amount": amt.get("amount"),
-                    "amount_usd": amt.get("amount_usd"),
+                    "amount_usd": amt.get("value_usd"),
                     "id": item.get("id"),
                     "classification": item.get("text"),
                     "link": f"https://whale-alert.io/alert_click/{item.get('link')}"

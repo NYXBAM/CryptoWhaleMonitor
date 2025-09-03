@@ -1,20 +1,16 @@
 from core.btc.monitor import *
 from core.eth.monitor import * 
-
 from core.btc.parser import *
 from core.eth.parser import *
-
-from utils.send_telegram_channel import send_telegram_message
-
-
-from config import BTC_WHALE_THRESHOLD, ETH_WHALE_THRESHOLD
-import time
 
 from data.db import engine, Base
 from data.models import WhaleTransaction
 from data.utils import *
 
+from utils.send_telegram_channel import send_telegram_message
 
+from config import BTC_WHALE_THRESHOLD, ETH_WHALE_THRESHOLD
+import time
 import hashlib
 import json
 
