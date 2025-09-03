@@ -59,11 +59,13 @@ def main():
                 for a in fresh_alerts:
                     blockchain = a['blockchain']
                     amount = a['amount']
+                    amount_usd = a['amount_usd']
                     classification = a['classification']
                     link = a['link']
                     message = (
                         f"🐳 <b>${blockchain} Whale-Alert.io!</b>\n\n"
                         f"💰 Amount: <b>{amount:.2f} {blockchain}</b>\n"
+                        f"💵 USD Value: ${amount_usd:,.2f}\n"
                         f"🏦 Classification: {classification}\n"
                         f"🔗 Link: <a href='{link}'>View Alert</a>"
                     )
