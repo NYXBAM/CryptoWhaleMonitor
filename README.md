@@ -1,12 +1,12 @@
 # Crypto Whale Monitor
 
-🐋 **Crypto Whale Monitor** is a real-time monitoring tool for tracking large cryptocurrency transactions ("whales") across multiple blockchains including BTC, ETH, and Polygon (MATIC). Alerts are sent directly to a Telegram channel for instant notifications.
+🐋 **Crypto Whale Monitor** is a real-time monitoring tool for tracking large cryptocurrency transactions ("whales") across multiple blockchains including BTC, ETH, and other. Alerts are sent directly to a Telegram channel for instant notifications.
 
 ---
 
 ## Features
 
-- Monitor large transactions on **Bitcoin, Ethereum, and Polygon**.
+- Monitor large transactions on **Bitcoin, Ethereum, and other**.
 - Identify **whale transactions** based on customizable thresholds.
 - **Telegram alerts** with formatted HTML messages.
 - Track **from/to addresses**, transaction amount, and link to blockchain explorers.
@@ -20,7 +20,6 @@
 - **Python 3.13+**
 - **Requests** for blockchain RPC calls and Telegram API
 - **SQLAlchemy** for database ORM
-- **SQLite** for local storage
 - **dotenv** for configuration management
 - Optional APIs: WalletExplorer for tagging addresses (e.g., exchanges)
 
