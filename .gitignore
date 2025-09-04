@@ -5,3 +5,4 @@
 *.pyc
 .pytest_cache/
 /tests
+/alerts_hashes.json

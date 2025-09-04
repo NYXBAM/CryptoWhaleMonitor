@@ -1,5 +1,6 @@
 # core/eth/parser.py
 from config import ETH_WHALE_THRESHOLD, KNOWN_EXCHANGES
+from models.dataclass import Transaction
 from .monitor import EthMonitor
 import requests
 import os
@@ -22,20 +23,20 @@ class EthParser(EthMonitor):
         whales = []
 
         for tx in block_data["transactions"]:
-
             value_eth = self.wei_to_eth(tx["value"])
             if value_eth >= self.whale_threshold:
                 tx_hash = tx["hash"]
                 classification = self.check_tx(tx_hash)
-                whales.append({
-                    "hash": tx_hash,
-                    "from": tx["from"],
-                    "to": tx["to"],
-                    "value": value_eth,
-                    "block_number": block_number,     
-                    "block_hash": block_data['hash'], 
-                    "classification": classification,
-                })
+                whales.append(Transaction( 
+                    amount=value_eth, 
+                    hash=tx_hash,
+                    from_a=tx["from"],
+                    to=tx["to"],
+                    value=value_eth,
+                    block_number=block_number,     
+                    block_hash=block_data['hash'], 
+                    classification=classification,
+                ))
 
         return whales
     
