@@ -24,7 +24,7 @@ class XRPParser:
             async with aiohttp.ClientSession() as session:
                 async with session.get(url) as resp:
                     data = await resp.json()
-                    return Decimal(str(data["ripple"]["usd"]))
+                    return Decimal(str(data.get("ripple", {}).get("usd", "0")))
         except Exception as e:
             logger.error(f"Error fetching $XRP price: {e}")
     
@@ -66,8 +66,8 @@ class XRPParser:
 
                     elif isinstance(amount, dict):
                         currency = decode_currency(amount.get("currency"))
-                        value_str = amount.get("value", "0") or "0"
-                        value = Decimal(value_str)
+                        value_str = amount.get("value") or "0"
+                        value = Decimal(str(value_str))
                         raw_amount = float(value)
 
                         if currency.upper() in ["USD", "USDT", "USDC"]:
