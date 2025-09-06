@@ -1,3 +1,6 @@
+### by NYXBAM ### 
+# TG CHANNEL:  https://t.me/CryptoTransac
+
 from core.btc.monitor import *
 from core.eth.monitor import * 
 from core.btc.parser import *
