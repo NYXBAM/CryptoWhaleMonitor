@@ -15,6 +15,11 @@ Enjoying this project? Give it a ⭐ and join the community of supporters!
 
 
 ---
+| Feature | Status |
+|---------|--------|
+| $TRX blockchain | ✅ Completed    |
+| $SOL blockchain| 🚧 In Progress |
+| $TRX mem coin tracking| ⚡ Coming Soon  |
 
 ## Features
 
