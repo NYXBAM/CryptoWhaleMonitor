@@ -5,7 +5,7 @@ Enjoying this project? Give it a ⭐ and join the community of supporters!
 
 🐋 **Crypto Whale Monitor** is a real-time monitoring tool for tracking large cryptocurrency transactions ("whales") across multiple blockchains including BTC, ETH, and other. Alerts are sent directly to a Telegram channel for instant notifications.
 
-### TG CHANNEL:  https://t.me/CryptoTransac
+### TG CHANNEL (Show how it`s work):  https://t.me/CryptoTransac
 
 <p align="center">
   <img width="422" height="375" alt="image" src="https://github.com/user-attachments/assets/19b9cfa0-9209-41f0-8fb6-318fa87c1147" />
