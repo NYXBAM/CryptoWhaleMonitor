@@ -8,6 +8,8 @@ Enjoying this project? Give it a ⭐ and join the community of supporters!
 ### TG CHANNEL (Show how it`s work):  https://t.me/CryptoTransac
 
 <p align="center">
+  <img width="422" height="375" alt="image" src="https://github.com/user-attachments/assets/8fa0e371-6338-48a6-918e-995b4a410da8" />
+
   <img width="422" height="375" alt="image" src="https://github.com/user-attachments/assets/19b9cfa0-9209-41f0-8fb6-318fa87c1147" />
   
   <img width="422" height="375" alt="image" src="https://github.com/user-attachments/assets/7a81f942-a9a3-47f4-a465-803c1a47ed51" />
