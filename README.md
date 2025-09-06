@@ -19,6 +19,7 @@ Enjoying this project? Give it a ⭐ and join the community of supporters!
 |---------|--------|
 | $TRX blockchain | ✅ Completed    |
 | $SOL blockchain| 🚧 In Progress |
+| $TRX parse label | 🚧 In Progress   |
 | $TRX mem coin tracking| ⚡ Coming Soon  |
 
 ## Features
