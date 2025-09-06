@@ -102,14 +102,15 @@ async def xrp_parser():
     logger.info("Starting $XRP PARSER")
     while True:
         try:
-            whales = await XRPParser.listen_whales()
-            for tx in whales:
-                if save_whale_txs("XRP", [tx]):
-                    logger.info(f"$XRP Transaction {tx.hash} processed")
-                else:
-                    logger.info(f"$XRP Transaction {tx.hash} already exists in DB")
+            async for whales in XRPParser.listen_whales():
+                for tx in whales:
+                    if save_whale_txs("XRP", [tx]):
+                        logger.info(f"$XRP Transaction {tx.hash} processed")
+                    else:
+                        logger.info(f"$XRP Transaction {tx.hash} already exists in DB")
         except Exception as e:
             logger.error(f"$XRP PARSER ERROR: {e}")
+
 
 
 

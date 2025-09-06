@@ -7,9 +7,9 @@ ETH_RPC_URL = "https://ethereum-rpc.publicnode.com"
 BTC_API_URL = "https://mempool.space/api"
 DATABASE_URL = 'sqlite:///./whale.db'
 
-ETH_WHALE_THRESHOLD = 500     # ETH
+ETH_WHALE_THRESHOLD = 500 # ETH
 BTC_WHALE_THRESHOLD = 50
-XRP_THRESHOLD_USD = 500_000 # in $USD  
+XRP_THRESHOLD_USD = 500_000 # in $USD  # 500_000
 
 
 KNOWN_EXCHANGES = [
