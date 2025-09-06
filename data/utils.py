@@ -4,13 +4,17 @@ from .db import SessionLocal
 from .models import WhaleTransaction
 import json
 import os
+import logging
 
+logger = logging.getLogger("CryptoWhaleMonitor")
 
 def get_explorer_url(blockchain):
     if blockchain == 'BTC':
         return "https://blockchain.com/explorer/transactions/btc/"
-    elif blockchain == 'ETH':
+    if blockchain == 'ETH':
         return "https://etherscan.io/tx/"
+    elif blockchain == 'XRP':
+        return "https://xrpscan.com/tx/"
     
 def get_classification_label(classification):
     classification = classification or "Unknown / normal transfer"
@@ -32,7 +36,7 @@ def save_whale_txs(blockchain: str, whales: list):
     Save whale transactions to the database and send Telegram alerts.
     :param blockchain: 'BTC' or 'ETH'
     :param whales: List of whale transaction dicts
-    """
+    """ 
     db = SessionLocal()
     try:
         for tx in whales:
@@ -41,7 +45,7 @@ def save_whale_txs(blockchain: str, whales: list):
             
             exists = db.query(WhaleTransaction).filter_by(txid=txid).first()
             if exists:
-                continue 
+                return False
             send_telegram_message(
                 f"🐳 <b>${blockchain} Whale Alert!</b>\n\n"
                 f"💰 Amount: <b>{tx.amount:.2f} {blockchain}</b>\n"
@@ -51,24 +55,25 @@ def save_whale_txs(blockchain: str, whales: list):
                 f"🔗 Tx: <a href='{get_explorer_url(blockchain)}{tx.hash}'>{tx.hash[:12]}…</a>\n"
                 f"🌐 Explorer: <a href='{get_explorer_url(blockchain)}{tx.hash}'>View Transaction</a>"
                 )
-
+            logging.info(f"${blockchain} Whale Alert:\n{amount} {blockchain}, Tx {txid}, from {tx.from_a} → {tx.to}\nSended to Telegram channel")
 
             whale = WhaleTransaction(
                 blockchain=blockchain,
                 txid=txid,
-                from_address=tx.from_a or tx.get('from', 'Unknown'),
-                to_address=tx.to or tx.get('to', 'Unknown'),
+                from_address=tx.from_a or 'Unknown', 
+                to_address=tx.to or 'Unknown',       
                 amount=amount,
-                block_hash_or_number=tx.block_hash or tx.get('block_hash', tx.get('block_number', 'Unknown')),
-                classification=tx.classification or tx.get('classification', None)
+                block_hash_or_number=tx.block_hash or 'Unknown',
+                classification=tx.classification or None        
             )
             db.add(whale)
         db.commit()
     except Exception as e:
         db.rollback()
-        print(f"Error saving whales: {e}")
+        logging.error(f"Error saving whales: {e}")
     finally:
         db.close()
+    return True
 
 def load_seen_hashes(filename='alerts_hashes.json'):
     if os.path.exists(filename):

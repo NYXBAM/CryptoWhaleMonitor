@@ -3,8 +3,9 @@ from .monitor import BitcoinMonitor
 from config import BTC_WHALE_THRESHOLD, KNOWN_EXCHANGES
 import requests
 from typing import List, Dict
+import logging
 
-
+logger = logging.getLogger("CryptoWhaleMonitor")
 
 class BitcoinWhaleParser:
     ''' Class to parse crypto whale transactions from Whale-alert.io, and
@@ -18,7 +19,7 @@ class BitcoinWhaleParser:
             r = requests.get(self.url, timeout=20)
             r.raise_for_status()
         except Exception as e:
-            print("Fetch error:", e)
+            logging.error(f"Fetch $BTC whale alerts error: {e}")
             return []
 
         data = r.json()
@@ -36,7 +37,7 @@ class BitcoinWhaleParser:
                     )
                     alerts.append(transaction)
                 except (ValueError, TypeError) as e:
-                    print(f"Error in parser btc: {e}")
+                    logging.error(f"Error in parser $BTC: {e}")
                     continue
         
         return alerts

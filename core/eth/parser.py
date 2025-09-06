@@ -5,11 +5,11 @@ from .monitor import EthMonitor
 import requests
 import os
 from dotenv import load_dotenv
-
+import logging
 
 load_dotenv()
 
-
+logger = logging.getLogger("CryptoWhaleMonitor")
 
 class EthParser(EthMonitor):
     '''Class to parse Ethereum blocks and identify whale transactions'''
@@ -50,7 +50,7 @@ class EthParser(EthMonitor):
         resp = requests.get(url, headers=headers, params=params)
 
         if resp.status_code != 200:
-            print(f"❌ Error {resp.status_code}: {resp.text}")
+            logging.error(f"Error fetching tx {tx_hash}: {resp.status_code}")
             return
 
         tx = resp.json()
@@ -68,16 +68,13 @@ class EthParser(EthMonitor):
         if from_lbl:
             for exch in KNOWN_EXCHANGES:
                 if exch in from_lbl:
-                    print(f"➡️ Withdrawal from exchange: {from_lbl}")
                     return f"withdrawal from: {from_lbl}"
      
         if to_lbl:
             for exch in KNOWN_EXCHANGES:
                 if exch in to_lbl:
-                    print(f"⬅️ Deposit to exchange: {to_lbl}")
                     return f"deposit to: {to_lbl}"
 
-        print("❔ Unknown / normal transfer")
         return "normal"
 
             

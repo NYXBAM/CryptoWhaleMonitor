@@ -2,42 +2,48 @@ from core.btc.monitor import *
 from core.eth.monitor import * 
 from core.btc.parser import *
 from core.eth.parser import *
+from core.xrp.parser import XRPParser
 
 from data.db import engine, Base
 from data.models import WhaleTransaction
 from data.utils import *
 
 from models.dataclass import Transaction
-
 from utils.send_telegram_channel import send_telegram_message
+from config import ETH_WHALE_THRESHOLD
 
-from config import BTC_WHALE_THRESHOLD, ETH_WHALE_THRESHOLD
 import time
 import hashlib
 import json
+import asyncio
+import logging
+import sys
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler("logs/logging.log", encoding='utf-8'),
+        logging.StreamHandler(sys.stdout)
+    ]
+)
 
 
-
+logger = logging.getLogger("CryptoWhaleMonitor")
 
 
 Base.metadata.create_all(bind=engine)
 
-def main():
-    btc_whale = BitcoinWhaleParser()
-    eth_parser = EthParser(whale_threshold=ETH_WHALE_THRESHOLD)
 
-    # btc_parser = BitcoinMonitor()
-    # last_btc_block = None
-    last_eth_block = None
-
-    seen_hashes = load_seen_hashes()
-    alerts = []
-
+        
+async def btc_parser():
     while True:
         try:
-            # latest_btc_block = btc_parser.get_btc_latest_block_hash()
-            # if latest_btc_block != last_btc_block:
-            #TODO move this fn into utils
+            # Debug 
+            logger.info("Starting $BTC PARSER")
+            btc_whale = BitcoinWhaleParser()
+            seen_hashes = load_seen_hashes()
+            alerts = []
             new_alerts = btc_whale.fetch_whale_alerts()
             fresh_alerts = []
             for a in new_alerts:
@@ -50,8 +56,10 @@ def main():
                 if fresh_alerts:
                     save_seen_hashes(seen_hashes)
             if fresh_alerts:
-                for a in fresh_alerts:
-                    print(f"${a.blockchain} whale: {a.amount} {a.classification}")
+                # Debug
+                # for a in fresh_alerts:
+                #     print(f"${a.blockchain} whale: {a.amount} {a.classification}")
+                #     logger.info(f"${a.blockchain} whale: {a.amount} {a.classification}")
                     
                 alerts.extend(fresh_alerts)
 
@@ -66,24 +74,47 @@ def main():
                     send_telegram_message(message)
 
         except Exception as e:
-            print("BTC error:", e)
-
-       # ---------- ETH ----------
+            logger.error(f"$BTC PARSING ERROR: {e}")
+        await asyncio.sleep(90)
+    
+async def eth_parser():
+    while True:
+        logger.info("Starting $ETH PARSER")
+        eth_parser = EthParser(whale_threshold=ETH_WHALE_THRESHOLD)
+        last_eth_block = None
         try:
             latest_eth_block = eth_parser.get_latest_block_number()
-            print(latest_eth_block)
             if latest_eth_block != last_eth_block:
                 whales = eth_parser.parse_block(latest_eth_block)
                 for tx in whales:
-                    print(f"🚨 $ETH whale: {tx.value:.2f} ETH, Tx {tx.hash} , from {tx.from_a} → {tx.to}")
+                    #dbg
+                    # logging.info(f"🚨 $ETH whale: {tx.value:.2f} ETH, Tx {tx.hash} , from {tx.from_a} → {tx.to}")
                     save_whale_txs("ETH", whales)
                 last_eth_block = latest_eth_block
         except Exception as e:
-            print("ETH error:", e)
+            logger.error(f"$ETH ERROR: {e}")
+        await asyncio.sleep(60)
 
-        
-        time.sleep(60)  
-        
+async def xrp_parser():
+    logger.info("Starting $XRP PARSER")
+    while True:
+        try:
+            whales = await XRPParser.listen_whales()
+            for tx in whales:
+                if save_whale_txs("XRP", [tx]):
+                    logger.info(f"$XRP Transaction {tx.hash} processed")
+                else:
+                    logger.info(f"$XRP Transaction {tx.hash} already exists in DB")
+        except Exception as e:
+            logging.error(f"$XRP PARSER ERROR: {e}")
 
+
+
+async def main():
+    await asyncio.gather(
+        xrp_parser(),
+        eth_parser(),
+        btc_parser()
+    )
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
