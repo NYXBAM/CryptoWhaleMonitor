@@ -1,4 +1,7 @@
 # Crypto Whale Monitor
+[![GitHub stars](https://img.shields.io/github/stars/NYXBAM/CryptoWhaleMonitor?style=social)](https://github.com/NYXBAM/CryptoWhaleMonitor/stargazers)
+Enjoying this project? Give it a ⭐ and join the community of supporters!
+
 
 🐋 **Crypto Whale Monitor** is a real-time monitoring tool for tracking large cryptocurrency transactions ("whales") across multiple blockchains including BTC, ETH, and other. Alerts are sent directly to a Telegram channel for instant notifications.
 
