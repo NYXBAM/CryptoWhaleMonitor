@@ -4,10 +4,11 @@
 
 ### TG CHANNEL:  https://t.me/CryptoTransac
 
-<img width="422" height="375" alt="image" src="https://github.com/user-attachments/assets/19b9cfa0-9209-41f0-8fb6-318fa87c1147" />
-<img width="318" height="479" alt="image" src="https://github.com/user-attachments/assets/1f9963ca-74e6-48c3-b7ee-810742cda7d9" />
-
-
+<p align="center">
+  <img width="422" height="375" alt="image" src="https://github.com/user-attachments/assets/19b9cfa0-9209-41f0-8fb6-318fa87c1147" />
+  
+  <img width="422" height="375" alt="image" src="https://github.com/user-attachments/assets/7a81f942-a9a3-47f4-a465-803c1a47ed51" />
+</p>
 
 
 ---
