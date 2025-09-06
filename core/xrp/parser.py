@@ -1,4 +1,5 @@
-from config import XRPL_WS, XRP_THRESHOLD_USD
+from config import XRPL_WS, XRP_THRESHOLD_USD, XRP_PRICE_URL
+from core.xrp.monitor import XRPMonitor
 from models.dataclass import Transaction
 
 import asyncio
@@ -14,11 +15,12 @@ logger = logging.getLogger("CryptoWhaleMonitor")
 
 class XRPParser:
     def __init__(self, XRP_THRESHOLD_USD=XRP_THRESHOLD_USD):
-        self.THRESHOLD_USD = XRP_THRESHOLD_USD        
+        self.THRESHOLD_USD = XRP_THRESHOLD_USD 
+        self.XRP_PRICE_URL = XRP_PRICE_URL       
     
     async def get_xrp_price(self):
         try:
-            url = "https://api.coingecko.com/api/v3/simple/price?ids=ripple&vs_currencies=usd"
+            url = self.XRP_PRICE_URL
             async with aiohttp.ClientSession() as session:
                 async with session.get(url) as resp:
                     data = await resp.json()
@@ -29,6 +31,7 @@ class XRPParser:
     @classmethod
     async def listen_whales(cls) -> List[Transaction]:
         # TODO Decorator for return whales without stoping websocket, bcs transactions in blockchain very fast 
+        monitor = XRPMonitor()
         whales = []
         instance = cls()
         xrp_price = await instance.get_xrp_price()
@@ -94,12 +97,14 @@ class XRPParser:
                             continue
                     
                     if usd_value and usd_value >= XRP_THRESHOLD_USD:
+                        hash = tx.get('hash')
+                        classification = monitor.get_address_classification(hash)
                         transaction = Transaction(
                             blockchain="XRP",
                             amount=raw_amount,
                             amount_usd=usd_value,
                             id=tx.get('hash') or '',
-                            classification="whale",
+                            classification=classification,
                             link=f"https://xrpscan.com/tx/{tx.get('hash')}",
                             hash=tx.get('hash') or '',
                             from_a=tx.get('Account') or 'Unknown',
@@ -114,6 +119,7 @@ class XRPParser:
                         logger.info(f"From: {transaction.from_a}")
                         logger.info(f"To: {transaction.to}")
                         logger.info(f"Amount: {transaction.amount:,.0f} {currency}")
+                        logger.info(f"Classification: {transaction.classification or 'Unknown / normal transfer'}")
                         logger.info(f"≈ {transaction.amount_usd:,.0f} USD")
                         logger.info(f"Link: {transaction.link}")
                         logger.info("-" * 60)

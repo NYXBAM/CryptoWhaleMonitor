@@ -27,6 +27,10 @@ def get_classification_label(classification):
     
     elif classification.startswith("exchange"):
         return "🔄 🏦 Exchange-to-exchange transfer"
+    
+    elif classification.startswith("From:") or classification.startswith("To:"):
+        return classification
+    
     else:
         return "🔄 Unknown|normal transfer"
 

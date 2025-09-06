@@ -109,7 +109,7 @@ async def xrp_parser():
                 else:
                     logger.info(f"$XRP Transaction {tx.hash} already exists in DB")
         except Exception as e:
-            logging.error(f"$XRP PARSER ERROR: {e}")
+            logger.error(f"$XRP PARSER ERROR: {e}")
 
 
 
