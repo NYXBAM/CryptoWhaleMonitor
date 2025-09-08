@@ -4,6 +4,10 @@ from typing import Optional
 @dataclass
 class Transaction:
     "dataclass represented a blockchain transaction"
+    __slots__ = [
+        'blockchain', 'amount', 'amount_usd', 'id', 'classification',
+        'link', 'hash', 'from_a', 'to', 'value', 'block_number', 'block_hash'
+    ]
     blockchain: Optional[str] = None
     amount: Optional[float] = None 
     amount_usd: Optional[float] = None
