@@ -27,6 +27,7 @@ class XRPParser:
                     return Decimal(str(data.get("ripple", {}).get("usd", "0")))
         except Exception as e:
             logger.error(f"Error fetching $XRP price: {e}")
+            return Decimal("0") # return default (not None), this may fix error in issue #3
     
     @classmethod
     async def listen_whales(cls):
