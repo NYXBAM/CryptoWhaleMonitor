@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 @dataclass
-class Transaction:
+class Transaction(slots=True):
     "dataclass represented a blockchain transaction"
     blockchain: Optional[str] = None
     amount: Optional[float] = None 
