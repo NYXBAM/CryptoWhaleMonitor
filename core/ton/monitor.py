@@ -1,4 +1,5 @@
 
+import asyncio
 import logging
 from config import TON_WHALE_THRESHOLD
 from core.ton.parser import TonParser
@@ -13,7 +14,7 @@ class TonMonitor(TonParser):
         super().__init__()
         self.sleep_interval = sleep_interval
 
-    def start_monitoring(self):
+    async def start_monitoring(self):
         logger.info("Starting TON whale monitor...")
         while True:
             try:
@@ -29,4 +30,4 @@ class TonMonitor(TonParser):
                         )
             except Exception as e:
                 logger.error(f"Error: {e}")
-            time.sleep(self.sleep_interval)
+            await asyncio.sleep(self.sleep_interval) 

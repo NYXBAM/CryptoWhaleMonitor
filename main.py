@@ -117,7 +117,7 @@ async def xrp_parser():
 async def ton_parser():
     logger.info("Starting $TON PARSER")
     monitor = TonMonitor()
-    monitor.start_monitoring()
+    await monitor.start_monitoring()
     
     
     
