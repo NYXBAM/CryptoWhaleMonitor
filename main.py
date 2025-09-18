@@ -62,11 +62,11 @@ async def btc_parser():
                 if fresh_alerts:
                     save_seen_hashes(seen_hashes)
             if fresh_alerts:
-                # Debug
-                # for a in fresh_alerts:
-                #     print(f"${a.blockchain} whale: {a.amount} {a.classification}")
-                #     logger.info(f"${a.blockchain} whale: {a.amount} {a.classification}")
-                    
+                for a in fresh_alerts:
+                    # Debug
+                    logger.info(f"${a.blockchain} whale: {a.amount} {a.classification}")
+                    db_add(a.blockchain, a.amount, a.classification)
+
                 alerts.extend(fresh_alerts)
 
                 for a in fresh_alerts:
@@ -124,9 +124,9 @@ async def ton_parser():
 
 async def main():
     await asyncio.gather(
-        ton_parser(),
-        xrp_parser(),
-        eth_parser(),
+        # ton_parser(),
+        # xrp_parser(),
+        # eth_parser(),
         btc_parser()
     )
 if __name__ == "__main__":

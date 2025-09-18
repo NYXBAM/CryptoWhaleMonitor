@@ -36,6 +36,29 @@ def get_classification_label(classification):
     else:
         return "🔄 Unknown|normal transfer"
 
+def db_add(blockchain, amount, classification):
+    """for whale-io alerts"""
+    db = SessionLocal()
+    whale_tx = WhaleTransaction(
+        blockchain=blockchain,
+        amount=amount,
+        classification=classification,
+        block_hash_or_number="not_available", 
+        txid=None,
+        from_address=None,
+        to_address=None
+    )
+    
+    db.add(whale_tx)
+    try:
+        db.commit()
+        logger.info(f"Added to DB: {blockchain} {amount} {classification}")
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Error adding to DB: {e}")
+    finally:
+        db.close()
+    
     
 def save_whale_txs(blockchain: str, whales: list):
     """
