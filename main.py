@@ -5,7 +5,10 @@ from core.btc.monitor import *
 from core.eth.monitor import * 
 from core.btc.parser import *
 from core.eth.parser import *
+from core.ton.monitor import TonMonitor
 from core.xrp.parser import XRPParser
+
+
 
 from data.db import engine, Base
 from data.models import WhaleTransaction
@@ -111,11 +114,17 @@ async def xrp_parser():
         except Exception as e:
             logger.error(f"$XRP PARSER ERROR: {e}")
 
-
-
+async def ton_parser():
+    logger.info("Starting $TON PARSER")
+    monitor = TonMonitor()
+    monitor.start_monitoring()
+    
+    
+    
 
 async def main():
     await asyncio.gather(
+        ton_parser(),
         xrp_parser(),
         eth_parser(),
         btc_parser()

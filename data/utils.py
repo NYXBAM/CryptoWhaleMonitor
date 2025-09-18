@@ -13,6 +13,8 @@ def get_explorer_url(blockchain):
         return "https://blockchain.com/explorer/transactions/btc/"
     if blockchain == 'ETH':
         return "https://etherscan.io/tx/"
+    if blockchain == 'TON':
+        return "https://tonscan.org/tx/"
     elif blockchain == 'XRP':
         return "https://xrpscan.com/tx/"
     
