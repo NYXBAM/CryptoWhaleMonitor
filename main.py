@@ -124,9 +124,9 @@ async def ton_parser():
 
 async def main():
     await asyncio.gather(
-        # ton_parser(),
-        # xrp_parser(),
-        # eth_parser(),
+        ton_parser(),
+        xrp_parser(),
+        eth_parser(),
         btc_parser()
     )
 if __name__ == "__main__":
