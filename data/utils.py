@@ -1,4 +1,5 @@
 # data/utils.py
+from sqlalchemy import text
 from utils.send_telegram_channel import send_telegram_message
 from .db import SessionLocal
 from .models import WhaleTransaction
@@ -116,3 +117,17 @@ def load_seen_hashes(filename='alerts_hashes.json'):
 def save_seen_hashes(hashes, filename='alerts_hashes.json'):
     with open(filename, 'w') as f:
         json.dump(list(hashes), f)
+
+def add_price_column(engine):
+    try:
+        with engine.connect() as conn:
+            conn.execute(text("ALTER TABLE whale_transactions ADD COLUMN price REAL"))
+            conn.commit()
+    except Exception as e:
+        error_msg = str(e)
+        if "duplicate column name" in error_msg or "already exists" in error_msg:
+            pass
+        else:
+            logger.error(f"Error with add price column {e}")
+            raise e
+        
