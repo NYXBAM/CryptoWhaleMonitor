@@ -39,7 +39,8 @@ logger = logging.getLogger("CryptoWhaleMonitor")
 
 
 Base.metadata.create_all(bind=engine)
-
+# adding column for exist db 
+add_price_column(engine=engine)
 
         
 async def btc_parser():

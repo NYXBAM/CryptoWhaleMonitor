@@ -1,5 +1,6 @@
 # data/utils.py
 from sqlalchemy import text
+from utils.get_price import CryptoPriceClient
 from utils.send_telegram_channel import send_telegram_message
 from .db import SessionLocal
 from .models import WhaleTransaction
@@ -40,6 +41,7 @@ def get_classification_label(classification):
 def db_add(blockchain, amount, classification):
     """for whale-io alerts"""
     db = SessionLocal()
+    price = CryptoPriceClient()
     whale_tx = WhaleTransaction(
         blockchain=blockchain,
         amount=amount,
@@ -47,7 +49,8 @@ def db_add(blockchain, amount, classification):
         block_hash_or_number="not_available", 
         txid=None,
         from_address=None,
-        to_address=None
+        to_address=None,
+        price=price.get_price(blockchain)
     )
     
     db.add(whale_tx)
@@ -59,8 +62,7 @@ def db_add(blockchain, amount, classification):
         logger.error(f"Error adding to DB: {e}")
     finally:
         db.close()
-    
-    
+
 def save_whale_txs(blockchain: str, whales: list):
     """
     Save whale transactions to the database and send Telegram alerts.
@@ -68,6 +70,7 @@ def save_whale_txs(blockchain: str, whales: list):
     :param whales: List of whale transaction dicts
     """ 
     db = SessionLocal()
+    price=CryptoPriceClient()
     try:
         for tx in whales:
             txid = tx.hash or tx.block_hash  or tx.id # TODO 
@@ -93,6 +96,7 @@ def save_whale_txs(blockchain: str, whales: list):
                 from_address=tx.from_a or 'Unknown', 
                 to_address=tx.to or 'Unknown',       
                 amount=amount,
+                price=price.get_price(blockchain),
                 block_hash_or_number=tx.block_hash or 'Unknown',
                 classification=tx.classification or None        
             )
