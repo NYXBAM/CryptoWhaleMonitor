@@ -1,3 +1,4 @@
+import logging
 import os
 import requests
 from dotenv import load_dotenv
@@ -8,6 +9,8 @@ from collections import deque
 
 
 load_dotenv()
+logger = logging.getLogger("TelegramSender")
+
 TELEGRAM_BOT_TOKEN = os.getenv("TG_BOT_TOKEN")
 TELEGRAM_CHAT_ID = os.getenv("TG_CHAT_ID")
 
@@ -42,7 +45,7 @@ class RateLimiter:
 @RateLimiter(max_calls=1, period=2)
 def send_telegram_message(message: str) -> bool:
     if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
-        print("Telegram token or chat_id not set in .env")
+        logger.warning("Telegram token or chat_id not set in .env")
         return False
 
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
@@ -60,8 +63,52 @@ def send_telegram_message(message: str) -> bool:
         if result.get("ok"):
             return True
         else:
-            print("Telegram API error:", result)
+            logger.error(f"Telegram API error: {result}")
             return False
     except Exception as e:
-        print("Error sending Telegram message:", e)
+        logger.error(f"Error sending Telegram message: {e}")
+        return False
+
+
+
+
+def send_telegram_report(file_path: str = "report.html") -> bool:
+    if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
+        logger.warning("Telegram token or chat_id not set in .env")
+        return False
+
+    if not os.path.exists(file_path):
+        return False
+
+    url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendDocument"
+
+    try:
+        with open(file_path, "rb") as f:
+            files = {"document": f}
+            data = {
+                "chat_id": TELEGRAM_CHAT_ID,
+                "disable_notification": True 
+            }
+            r = requests.post(url, data=data, files=files, timeout=30)
+            r.raise_for_status()
+            result = r.json()
+            if result.get("ok"):
+                message_id = result["result"]["message_id"]
+                unpin_url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/unpinAllChatMessages"
+                requests.post(unpin_url, data={"chat_id": TELEGRAM_CHAT_ID}, timeout=10)
+
+                pin_url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/pinChatMessage"
+                pin_data = {
+                    "chat_id": TELEGRAM_CHAT_ID,
+                    "message_id": message_id,
+                    "disable_notification": True 
+                }
+                requests.post(pin_url, data=pin_data, timeout=10)
+
+                return True
+            else:
+                logger.error(f"Telegram API error: {result}")
+                return False
+    except Exception as e:
+        logger.error(f"Error sending Telegram document: {e}")
         return False
