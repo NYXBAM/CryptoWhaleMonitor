@@ -15,6 +15,9 @@ XRP_THRESHOLD_USD = 2_000_000 # in $USD
 TON_WHALE_THRESHOLD = 10_000  # 10000 TON in TON
 
 
+# REPORT LANGUAGE
+REPORT_LANGUAGE = "EN"  # or RU 
+
 KNOWN_EXCHANGES = [
     "Binance", "Coinbase", "Kraken", "Bitfinex", "Bitstamp",
     "Huobi", "OKX", "Gemini", "Bitget", "FTX", "KuCoin", "Poloniex",
