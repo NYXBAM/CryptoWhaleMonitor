@@ -19,6 +19,7 @@ Enjoying this project? Give it a ⭐ and join the community of supporters!
 ---
 | Feature | Status |
 |---------|--------|
+| 🦾 AI Transactions Analyzer  | ✅ Completed    |
 | $TRX blockchain | ✅ Completed    |
 | $TRX classification/label parser | ✅ Completed   |
   $TON blockchain | ✅ Completed    |

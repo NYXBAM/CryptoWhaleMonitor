@@ -10,6 +10,7 @@ from core.xrp.parser import XRPParser
 
 
 
+from data.analytics.ai_report import generate_and_send
 from data.db import engine, Base
 from data.models import WhaleTransaction
 from data.utils import *
@@ -120,15 +121,23 @@ async def ton_parser():
     monitor = TonMonitor()
     await monitor.start_monitoring()
     
-    
-    
+async def analytics():
+    logger.info("Starting analytics...")
+    while True:
+        try:
+            await asyncio.to_thread(generate_and_send)
+            logger.info("Report generated and send in telegram")
+        except Exception as e:
+            logger.error(f"Error {e} in sending analytics")
+        await asyncio.sleep(2 * 60 * 60)
 
 async def main():
     await asyncio.gather(
         ton_parser(),
         xrp_parser(),
         eth_parser(),
-        btc_parser()
-    )
+        btc_parser(),
+        analytics()
+    ) 
 if __name__ == "__main__":
     asyncio.run(main())
