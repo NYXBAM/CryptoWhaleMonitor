@@ -71,7 +71,7 @@ def send_telegram_message(message: str) -> bool:
 
 
 
-
+@RateLimiter(max_calls=1, period=2)
 def send_telegram_report(file_path: str = "report.html") -> bool:
     if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
         logger.warning("Telegram token or chat_id not set in .env")
