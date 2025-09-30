@@ -86,7 +86,8 @@ def send_telegram_report(file_path: str = "AiAnalytics.html") -> bool:
             files = {"document": f}
             data = {
                 "chat_id": TELEGRAM_CHAT_ID,
-                "disable_notification": True 
+                "disable_notification": True,
+                "caption": "🤖 AI Analytics Report (Last 2 Hours)\n",
             }
             r = requests.post(url, data=data, files=files, timeout=30)
             r.raise_for_status()
