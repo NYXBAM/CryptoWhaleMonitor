@@ -72,7 +72,7 @@ def send_telegram_message(message: str) -> bool:
 
 
 @RateLimiter(max_calls=1, period=2)
-def send_telegram_report(file_path: str = "report.html") -> bool:
+def send_telegram_report(file_path: str = "AiAnalytics.html") -> bool:
     if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
         logger.warning("Telegram token or chat_id not set in .env")
         return False
@@ -81,7 +81,6 @@ def send_telegram_report(file_path: str = "report.html") -> bool:
         return False
 
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendDocument"
-
     try:
         with open(file_path, "rb") as f:
             files = {"document": f}
