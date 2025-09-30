@@ -190,5 +190,5 @@ def generate_and_send():
         transactions = generator.get_recent_transactions(hours=2)  
         markdown_report = generator.generate_report(transactions)
         html_report = generator.convert_to_html(markdown_report)
-        generator.save_to_html(html_report, "report.html")
-        send_telegram_report("report.html")
+        generator.save_to_html(html_report, "AiAnalytics.html.html")
+        send_telegram_report("AiAnalytics.html.html")
