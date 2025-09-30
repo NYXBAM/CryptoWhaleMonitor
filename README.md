@@ -22,8 +22,10 @@ Enjoying this project? Give it a ⭐ and join the community of supporters!
 | 🦾 AI Transactions Analyzer  | ✅ Completed    |
 | $TRX blockchain | ✅ Completed    |
 | $TRX classification/label parser | ✅ Completed   |
-  $TON blockchain | ✅ Completed    |
+| $TON blockchain | ✅ Completed    |
 | $SOL blockchain| 🚧 In Progress |
+| REST API | 🚧 In Progress |
+| Charts | ⚡ Coming Soon |
 | $TRX mem coin tracking| ⚡ Coming Soon  |
 
 ## Features
