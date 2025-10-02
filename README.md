@@ -67,6 +67,8 @@ TG_BOT_TOKEN=your_telegram_bot_token
 TG_CHAT_ID=-1001234567890   # your channel ID
 # moralis api 
 MORALIS_API_KEY=ealGJ # your moralis api key, it`s for free -> here https://admin.moralis.com/login
+API_INTELLIGENCE= # u can get this for free -> here https://io.net/intelligence #
+# This api using to generate Ai analyze report
 ```
 
 Then run main.py file 
