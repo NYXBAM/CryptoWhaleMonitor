@@ -138,7 +138,7 @@ async def main():
     if API == True:
         api_task = asyncio.create_task(
             uvicorn.Server(
-                uvicorn.Config(app, host="0.0.0.0", port=8000, log_level="info")
+                uvicorn.Config(app, host="0.0.0.0", port=7777, log_level="info")
             ).serve()
         )
         tasks.append(api_task)
