@@ -1,4 +1,6 @@
 # config
+API = True # Enable API server  
+
 
 XRPL_WS = "wss://xrplcluster.com"
 XRP_SCAN_API = "https://api.xrpscan.com/api/v1/tx/"
