@@ -1,6 +1,8 @@
 ### by NYXBAM ### 
 # TG CHANNEL:  https://t.me/CryptoTransac
 
+import uvicorn
+from api.v1.app import app
 from core.btc.monitor import *
 from core.eth.monitor import * 
 from core.btc.parser import *
@@ -17,7 +19,7 @@ from data.utils import *
 
 from models.dataclass import Transaction
 from utils.send_telegram_channel import send_telegram_message
-from config import ETH_WHALE_THRESHOLD
+from config import API, ETH_WHALE_THRESHOLD
 
 import time
 import hashlib
@@ -132,12 +134,27 @@ async def analytics():
         await asyncio.sleep(2 * 60 * 60)
 
 async def main():
-    await asyncio.gather(
-        ton_parser(),
-        xrp_parser(),
-        eth_parser(),
-        btc_parser(),
-        analytics()
-    ) 
+    tasks = []
+    if API == True:
+        api_task = asyncio.create_task(
+            uvicorn.Server(
+                uvicorn.Config(app, host="0.0.0.0", port=8000, log_level="info")
+            ).serve()
+        )
+        tasks.append(api_task)
+    
+    parser_tasks = [
+        asyncio.create_task(ton_parser()),
+        asyncio.create_task(xrp_parser()),
+        asyncio.create_task(eth_parser()),
+        asyncio.create_task(btc_parser()),
+        asyncio.create_task(analytics()),
+    ]
+    
+    tasks.extend(parser_tasks)
+    await asyncio.gather(*tasks)
+
+
+
 if __name__ == "__main__":
     asyncio.run(main())
