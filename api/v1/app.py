@@ -24,7 +24,7 @@ async def get_last_transactions(n: int = Query(50, ge=1, le=500)):
 @app.get("/report")
 async def get_ai_report():
     root_dir = Path(__file__).resolve().parents[2]
-    report_path = root_dir / "report.html"
+    report_path = root_dir / "AiAnalytics.html"
     if not report_path.exists():
         logger.error(f"File {report_path} not found")
         return {"error": f"File {report_path} not found"}
