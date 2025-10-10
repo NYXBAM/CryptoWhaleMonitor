@@ -28,14 +28,14 @@ class WhaleTransactionFetcher:
         self.Session = sessionmaker(bind=self.engine)
 
     def get_recent_transactions(self, hours: int = 1) -> List[Dict]:
-          ''' fetching transactions from DB, exclude $TON transactions, because, there are not classificated'''
+          ''' fetching transactions from DB, exclude $TON and $SOL transactions, because, there are not classificated'''
           with self.Session() as db:
             time_threshold = datetime.now(timezone.utc) - timedelta(hours=hours)
             transactions = (
                 db.query(WhaleTransaction)
                 .filter(
                     WhaleTransaction.timestamp >= time_threshold,
-                    WhaleTransaction.blockchain != "TON"
+                    WhaleTransaction.blockchain.notin_(["SOL", "TON"]),
                 )
                 .all()
             )
