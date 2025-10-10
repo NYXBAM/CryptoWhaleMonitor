@@ -8,6 +8,7 @@ XRP_PRICE_URL = "https://api.coingecko.com/api/v3/simple/price?ids=ripple&vs_cur
 ETH_RPC_URL = "https://ethereum-rpc.publicnode.com"
 BTC_API_URL = "https://mempool.space/api"
 TON_API_URL = "https://toncenter.com/api/v3/transactions"
+SOL_RPC_URL = "https://api.mainnet-beta.solana.com"
 
 DATABASE_URL = 'sqlite:///./whale.db'
 
@@ -15,7 +16,7 @@ ETH_WHALE_THRESHOLD = 500 # ETH
 BTC_WHALE_THRESHOLD = 50
 XRP_THRESHOLD_USD = 2_000_000 # in $USD  
 TON_WHALE_THRESHOLD = 10_000  # 10000 TON in TON
-
+SOL_THRESHOLD_USD = 10_000 # USD 
 
 # REPORT LANGUAGE
 REPORT_LANGUAGE = "EN"  # or RU 

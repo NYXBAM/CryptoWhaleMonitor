@@ -9,6 +9,7 @@ from core.btc.parser import *
 from core.eth.parser import *
 from core.ton.monitor import TonMonitor
 from core.xrp.parser import XRPParser
+from core.sol.parser import SolanaParser
 
 
 
@@ -38,7 +39,7 @@ logging.basicConfig(
 )
 
 
-logger = logging.getLogger("CryptoWhaleMonitor")
+logger = logging.getLogger(__name__)
 
 
 Base.metadata.create_all(bind=engine)
@@ -122,6 +123,20 @@ async def ton_parser():
     logger.info("Starting $TON PARSER")
     monitor = TonMonitor()
     await monitor.start_monitoring()
+
+async def sol_parser():
+    logger.info("Starting $SOL PARSER")
+    parser = SolanaParser() 
+    while True:
+        try:
+            async for whales in parser.listen_whales():
+                for tx in whales:
+                    if save_whale_txs("SOL", [tx]):
+                        logger.info(f"$SOL Transaction {tx.hash} processed")
+                    else:
+                        logger.info(f"$SOL Transaction {tx.hash} already exists in DB")
+        except Exception as e:
+            logger.error(f"$SOL PARSER ERROR: {e}")
     
 async def analytics():
     logger.info("Starting analytics...")
@@ -148,7 +163,8 @@ async def main():
         asyncio.create_task(xrp_parser()),
         asyncio.create_task(eth_parser()),
         asyncio.create_task(btc_parser()),
-        asyncio.create_task(analytics()),
+        asyncio.create_task(sol_parser()),
+        asyncio.create_task(analytics()),       
     ]
     
     tasks.extend(parser_tasks)

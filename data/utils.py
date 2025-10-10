@@ -19,6 +19,8 @@ def get_explorer_url(blockchain):
         return "https://tonscan.org/tx/"
     elif blockchain == 'XRP':
         return "https://xrpscan.com/tx/"
+    elif blockchain == "SOL":
+        return "https://solscan.io/tx/"
     
 def get_classification_label(classification):
     classification = classification or "Unknown / normal transfer"
