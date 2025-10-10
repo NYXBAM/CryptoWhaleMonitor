@@ -24,7 +24,7 @@ Enjoying this project? Give it a ⭐ and join the community of supporters!
 | $TRX classification/label parser | ✅ Completed   |
 | $TON blockchain | ✅ Completed    |
 | REST API | ✅ Completed |
-| $SOL blockchain| 🚧 In Progress |
+| $SOL blockchain| ✅ Completed |
 | Charts | ⚡ Coming Soon |
 | $TRX mem coin tracking| ⚡ Coming Soon  |
 
