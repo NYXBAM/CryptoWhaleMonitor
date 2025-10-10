@@ -49,7 +49,7 @@ class SolanaParser:
             logger.error(f"Error fetching slot {slot}: {e}")
             return None
 
-    async def process_block(self, slot, session):
+    async def process_block(self, slot, session, sol_price):
         while True:
             block = await self.get_block(slot, session)
             result = block.get("result") if block else None
