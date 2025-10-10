@@ -4,7 +4,6 @@ Solana parser implementation
 """
 
 from config import SOL_THRESHOLD_USD, SOL_RPC_URL
-from core.sol.monitor import SolanaMonitor
 from models.dataclass import Transaction
 
 import asyncio
@@ -28,7 +27,6 @@ class SolanaParser:
     def __init__(self, SOL_THRESHOLD_USD=SOL_THRESHOLD_USD):
         self.THRESHOLD_USD = SOL_THRESHOLD_USD
         self.SOL_PRICE = Decimal(str(get_price.CryptoPriceClient.get_price('SOL')))
-        self.monitor = SolanaMonitor()
 
     async def get_block(self, slot, session):
         payload = {
