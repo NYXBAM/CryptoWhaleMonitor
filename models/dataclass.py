@@ -33,7 +33,13 @@ class Transaction():
     #         'block_number': self.block_number,
     #         'block_hash': self.block_hash
     #     }
+    
+    
     def to_dict(self) -> dict:
         return asdict(self)
-    
+
+
+    # Or use more pythonic
+    # def to_dict(self) -> dict:
+    #     return {slot: getattr(self, slot) for slot in self.__slots__}
     
