@@ -1,3 +1,4 @@
+import logging
 import requests
 from config import BTC_API_URL 
 
@@ -8,10 +9,23 @@ class BitcoinMonitor():
     
     
     def get_btc_latest_block_hash(self):
-        return requests.get(f"{self.BTC_API_URL}/blocks/tip/hash").text
-
-    def get_btc_block_txs(self,block_hash):
-        return requests.get(f"{self.BTC_API_URL}/block/{block_hash}/txs").json()
+        try:
+            r = requests.get(f"{self.BTC_API_URL}/blocks/tip/hash", timeout=30)
+            r.raise_for_status()
+            return r.text
+        except Exception as e:
+            logging.error(f"Error getting latest block hash: {e}")
+            return None
+    
+    
+    def get_btc_block_txs(self, block_hash):
+        try:
+            r = requests.get(f"{self.BTC_API_URL}/block/{block_hash}/txs", timeout=30)
+            r.raise_for_status()
+            return r.json()
+        except Exception as e:
+            logging.error(f"Error getting block transactions: {e}")
+            return []
 
 
     @staticmethod
