@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from typing import Optional
 
 @dataclass(slots=True)
@@ -17,29 +17,15 @@ class Transaction():
     block_number: Optional[int] = None
     block_hash: Optional[str] = None
     
-    
-    # def to_dict(self) -> dict:
-    #     return {
-    #         'blockchain': self.blockchain,
-    #         'amount': self.amount,
-    #         'amount_usd': self.amount_usd,
-    #         'id': self.id,
-    #         'classification': self.classification,
-    #         'link': self.link,
-    #         'hash': self.hash,
-    #         'from_a': self.from_a,
-    #         'to': self.to,
-    #         'value': self.value,
-    #         'block_number': self.block_number,
-    #         'block_hash': self.block_hash
-    #     }
-    
+    def __post_init__(self):
+        if self.amount is None:
+            raise ValueError("Amount cannot be None")
+        if not self.blockchain:
+            raise ValueError("Blockchain symbol is required")
+        
     
     def to_dict(self) -> dict:
         return asdict(self)
-
-
-    # Or use more pythonic
-    # def to_dict(self) -> dict:
-    #     return {slot: getattr(self, slot) for slot in self.__slots__}
+    
+    
     

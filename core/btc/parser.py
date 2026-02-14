@@ -18,11 +18,11 @@ class BitcoinWhaleParser:
         try:
             r = requests.get(self.url, timeout=20)
             r.raise_for_status()
+            data = r.json()
         except Exception as e:
             logging.error(f"Fetch $BTC whale alerts error: {e}")
             return []
 
-        data = r.json()
         alerts = []
         for item in data:
             for amt in item.get("amounts", []):
